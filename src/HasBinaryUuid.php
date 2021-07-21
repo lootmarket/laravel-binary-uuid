@@ -184,9 +184,14 @@ trait HasBinaryUuid
         return base64_encode($this->{$this->getKeyName()});
     }
 
-    public function newQueryForRestoration($id)
+    public function newQueryForRestoration($ids)
     {
-        return $this->newQueryWithoutScopes()->whereKey(base64_decode($id));
+        if (is_array($ids)) {
+            $ids = array_map('base64_decode', $ids);
+        } else {
+            $ids = base64_decode($ids);
+        }
+        return $this->newQueryWithoutScopes()->whereKey($ids);
     }
 
     public function newEloquentBuilder($query)
